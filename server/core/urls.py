@@ -4,4 +4,5 @@ from core import views
 urlpatterns = [
     path("execute/", views.ExecuteCode.as_view()),
     path("health_check/", views.HealthCheck.as_view()),
+    path("get_languages/", views.GetLanguages.as_view()),
 ]

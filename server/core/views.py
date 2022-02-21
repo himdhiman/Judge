@@ -1,6 +1,7 @@
 import os
 from time import time
 import subprocess
+from core import models, serializers
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
@@ -21,6 +22,12 @@ class HealthCheck(APIView):
             else:
                 data[f"worker{str(i)}"] = "OK"
         return Response(data=data,status=status.HTTP_200_OK)
+
+class GetLanguages(APIView):
+    def get(self, _):
+        langs = models.Language.objects.all()
+        data = serializers.LanguageSerializer(langs, many = True)
+        return Response(data=data.data,status=status.HTTP_200_OK)
 
 
 class ExecuteCode(APIView):
