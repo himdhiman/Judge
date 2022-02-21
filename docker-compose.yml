@@ -1,0 +1,55 @@
+version: "3.8"
+
+networks:
+  judge:
+    name: judge
+    driver: bridge
+    attachable: false
+
+services:
+  database:
+    image: postgres
+    container_name: database-container
+    env_file:
+      - .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    networks:
+      - judge
+  server:
+    build: server
+    container_name: server-container
+    volumes:
+      - ./server:/app
+    env_file:
+      - ./server/.env
+    command: >
+      sh -c "python3 manage.py wait_for_db &&
+             python3 manage.py makemigrations &&
+             python3 manage.py migrate &&
+             gunicorn server.wsgi:application --bind 0.0.0.0:8000"
+    ports:
+      - 8000:8000
+    networks:
+      - judge
+    depends_on:
+      - database
+  worker1:
+    build: worker
+    container_name: worker1-container
+    volumes:
+      - ./worker:/app
+    env_file:
+      - ./worker/.env
+    command: >
+      sh -c "python3 manage.py wait_for_db &&
+             python3 manage.py makemigrations &&
+             gunicorn worker.wsgi:application --bind 0.0.0.0:8001"
+    # ports:
+    #   - 8001:8001
+    networks:
+      - judge
+    depends_on:
+      - database
+volumes:
+  pgdata:
