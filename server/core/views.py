@@ -12,9 +12,8 @@ WORKERS = int(settings.WORKERS)
 
 class HealthCheck(APIView):
     def get(self, _):
-        workers = int(os.environ.get("workers"))
         data = {}
-        for i in range(1, workers + 1):
+        for i in range(1, WORKERS + 1):
             start_time = time()
             process = subprocess.Popen(
                 f"timeout 1s curl http://worker{str(i)}:800{str(i)}/health_check/",
