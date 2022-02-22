@@ -13,7 +13,7 @@ class HealthCheck(APIView):
         data = {}
         for i in range(1, workers + 1):
             start_time = time()
-            process = subprocess.Popen(f"timeout 1s curl http://worker{str(i)}:8001/health_check/", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            process = subprocess.Popen(f"timeout 1s curl http://worker{str(i)}:800{str(i)}/health_check/", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             _, _ = process.communicate()
             end_time = time()
             time_elapsed = end_time-start_time
@@ -33,4 +33,7 @@ class GetLanguages(APIView):
 class ExecuteCode(APIView):
     def post(self, request):
         print(request.data)
+        i = 1
+        process = subprocess.Popen(f'timeout 1s curl -d "name=himanshu&pass=himanshu" http://worker{str(i)}:800{str(i)}/execute_code/', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        _, _ = process.communicate()
         return Response(status=status.HTTP_202_ACCEPTED)
