@@ -41,7 +41,9 @@ services:
       - database
       - redis
   worker1:
-    build: worker
+    build:
+      context: worker
+      dockerfile: Dockerfile.worker
     container_name: worker1-container
     volumes:
       - ./worker:/app
@@ -59,7 +61,9 @@ services:
       - database
       - redis
   celery1:
-    build: worker
+    build:
+      context: worker
+      dockerfile: Dockerfile.celery
     container_name: celery1-container
     volumes:
       - ./worker:/app

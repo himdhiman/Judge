@@ -10,6 +10,7 @@ class LanguageAdmin(admin.ModelAdmin):
 
 class submissionAdmin(admin.ModelAdmin):
     list_display = (
+        "task_id",
         "created_by",
         "language",
         "status",

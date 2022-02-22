@@ -34,6 +34,10 @@ class ExecuteCode(APIView):
     def post(self, request):
         print(request.data)
         i = 1
-        process = subprocess.Popen(f'timeout 1s curl -d "name=himanshu&pass=himanshu" http://worker{str(i)}:800{str(i)}/execute_code/', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        obj = models.Submission.objects.create(**request.data)
+        process = subprocess.Popen(f'timeout 1s curl -d "id={str(obj.task_id)}" http://worker{str(i)}:800{str(i)}/execute_code/', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         _, _ = process.communicate()
-        return Response(status=status.HTTP_202_ACCEPTED)
+        data = {
+            "id" : obj.task_id
+        }
+        return Response(data=data, status=status.HTTP_202_ACCEPTED)

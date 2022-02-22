@@ -15,7 +15,7 @@ class Submission(models.Model):
     problem_id = models.IntegerField(blank=False)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     code = models.TextField(blank=True, null=True)
-    status = models.CharField(max_length=20, default="Queued")
+    status = models.CharField(max_length=50, default="Queued")
     stderr = models.TextField(blank=True, null=True)
     test_Cases_Passed = models.IntegerField(null=True, blank=True)
     total_Test_Cases = models.IntegerField(null=True, blank=True)
