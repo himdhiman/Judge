@@ -13,21 +13,27 @@ class HealthCheck(APIView):
         data = {}
         for i in range(1, workers + 1):
             start_time = time()
-            process = subprocess.Popen(f"timeout 1s curl http://worker{str(i)}:800{str(i)}/health_check/", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            process = subprocess.Popen(
+                f"timeout 1s curl http://worker{str(i)}:800{str(i)}/health_check/",
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True,
+            )
             _, _ = process.communicate()
             end_time = time()
-            time_elapsed = end_time-start_time
+            time_elapsed = end_time - start_time
             if time_elapsed > 0.99:
                 data[f"worker{str(i)}"] = "Error"
             else:
                 data[f"worker{str(i)}"] = "OK"
-        return Response(data=data,status=status.HTTP_200_OK)
+        return Response(data=data, status=status.HTTP_200_OK)
+
 
 class GetLanguages(APIView):
     def get(self, _):
         langs = models.Language.objects.all()
-        data = serializers.LanguageSerializer(langs, many = True)
-        return Response(data=data.data,status=status.HTTP_200_OK)
+        data = serializers.LanguageSerializer(langs, many=True)
+        return Response(data=data.data, status=status.HTTP_200_OK)
 
 
 class ExecuteCode(APIView):
@@ -35,9 +41,12 @@ class ExecuteCode(APIView):
         print(request.data)
         i = 1
         obj = models.Submission.objects.create(**request.data)
-        process = subprocess.Popen(f'timeout 1s curl -d "id={str(obj.task_id)}" http://worker{str(i)}:800{str(i)}/execute_code/', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        process = subprocess.Popen(
+            f'timeout 1s curl -d "id={str(obj.task_id)}" http://worker{str(i)}:800{str(i)}/execute_code/',
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True,
+        )
         _, _ = process.communicate()
-        data = {
-            "id" : obj.task_id
-        }
+        data = {"id": obj.task_id}
         return Response(data=data, status=status.HTTP_202_ACCEPTED)

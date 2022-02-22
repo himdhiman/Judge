@@ -2,12 +2,14 @@ from pyexpat import model
 from django.db import models
 import uuid
 
+
 class Language(models.Model):
-    name = models.CharField(max_length = 20, blank = True, null = True)
-    is_archived = models.BooleanField(default = False)
+    name = models.CharField(max_length=20, blank=True, null=True)
+    is_archived = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
+
 
 class Submission(models.Model):
     task_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

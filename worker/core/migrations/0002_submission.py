@@ -8,25 +8,38 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0001_initial'),
+        ("core", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Submission',
+            name="Submission",
             fields=[
-                ('task_id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_by', models.CharField(max_length=50)),
-                ('problem_id', models.IntegerField()),
-                ('code', models.TextField(blank=True, null=True)),
-                ('status', models.CharField(blank=True, max_length=20, null=True)),
-                ('stderr', models.TextField(blank=True, null=True)),
-                ('test_Cases_Passed', models.IntegerField(blank=True, null=True)),
-                ('total_Test_Cases', models.IntegerField(blank=True, null=True)),
-                ('score', models.IntegerField(blank=True, null=True)),
-                ('total_score', models.IntegerField(blank=True, null=True)),
-                ('timestamp', models.DateTimeField(auto_now=True)),
-                ('language', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.language')),
+                (
+                    "task_id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("created_by", models.CharField(max_length=50)),
+                ("problem_id", models.IntegerField()),
+                ("code", models.TextField(blank=True, null=True)),
+                ("status", models.CharField(blank=True, max_length=20, null=True)),
+                ("stderr", models.TextField(blank=True, null=True)),
+                ("test_Cases_Passed", models.IntegerField(blank=True, null=True)),
+                ("total_Test_Cases", models.IntegerField(blank=True, null=True)),
+                ("score", models.IntegerField(blank=True, null=True)),
+                ("total_score", models.IntegerField(blank=True, null=True)),
+                ("timestamp", models.DateTimeField(auto_now=True)),
+                (
+                    "language",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="core.language"
+                    ),
+                ),
             ],
         ),
     ]

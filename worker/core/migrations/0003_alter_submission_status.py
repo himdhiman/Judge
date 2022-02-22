@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0002_submission'),
+        ("core", "0002_submission"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='submission',
-            name='status',
-            field=models.CharField(default='Queued', max_length=20),
+            model_name="submission",
+            name="status",
+            field=models.CharField(default="Queued", max_length=20),
         ),
     ]

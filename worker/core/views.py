@@ -8,6 +8,7 @@ class HealthCheck(APIView):
     def get(self, _):
         return Response(status=status.HTTP_200_OK)
 
+
 class ExecuteCode(APIView):
     def post(self, request):
         tasks.executeCode.delay(request.data)

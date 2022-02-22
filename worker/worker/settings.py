@@ -117,3 +117,4 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_TIMEZONE = "Asia/Kolkata"
 
 
+BASE_URL = os.environ.get("BASE_URL")
