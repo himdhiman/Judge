@@ -64,3 +64,14 @@ class ExecuteCode(APIView):
             json.dump(data, jsonFile)
         return Response(data=ret_data, status=status.HTTP_202_ACCEPTED)
 
+class GetResult(APIView):
+    def get(slef, _, task_id):
+        try:
+            obj = models.Submission.objects.filter(task_id = task_id)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if len(obj) == 0:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        data = serializers.SubmissionSerializer(obj.first())
+        return Response(data=data.data,status=status.HTTP_200_OK)
+
