@@ -10,4 +10,5 @@ RUN mkdir /app
 COPY . /app
 WORKDIR /app
 
+RUN pip install celery
 # RUN python3 manage.py collectstatic --noinput

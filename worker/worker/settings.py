@@ -11,6 +11,8 @@ DEBUG = os.environ.get("DEBUG")
 
 ALLOWED_HOSTS = ["*"]
 
+WORKER_ID = os.environ.get("workerid")
+
 
 INSTALLED_APPS = [
     "rest_framework",
@@ -105,3 +107,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+CELERY_BROKER_URL = f"redis://redis:6379/{str(WORKER_ID)}"
+
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TASK_SERIALIZER = "json"
+CELERY_TIMEZONE = "Asia/Kolkata"
+
+

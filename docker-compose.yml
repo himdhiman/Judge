@@ -16,6 +16,11 @@ services:
       - pgdata:/var/lib/postgresql/data/
     networks:
       - judge
+  redis:
+    image: redis
+    command: redis-server
+    networks:
+      - judge
   server:
     build: server
     container_name: server-container
@@ -34,6 +39,7 @@ services:
       - judge
     depends_on:
       - database
+      - redis
   worker1:
     build: worker
     container_name: worker1-container
@@ -41,15 +47,32 @@ services:
       - ./worker:/app
     env_file:
       - ./worker/.env
+    environment:
+      - workerid=1
     command: >
       sh -c "python3 manage.py wait_for_db &&
              python3 manage.py makemigrations &&
              gunicorn worker.wsgi:application --bind 0.0.0.0:8001"
-    # ports:
-    #   - 8001:8001
     networks:
       - judge
     depends_on:
       - database
+      - redis
+  celery1:
+    build: worker
+    container_name: celery1-container
+    volumes:
+      - ./worker:/app
+    env_file:
+      - ./worker/.env
+    environment:
+      - workerid=1
+    command: "celery -A worker.celery worker -l INFO"
+    networks:
+      - judge
+    depends_on:
+      - worker1
+      - database
+      - redis
 volumes:
   pgdata:
