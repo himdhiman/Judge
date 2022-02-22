@@ -10,6 +10,8 @@ DEBUG = os.environ.get("DEBUG")
 
 ALLOWED_HOSTS = ["*"]
 
+WORKERS = os.environ.get("WORKERS")
+
 INSTALLED_APPS = [
     "rest_framework",
     "core",

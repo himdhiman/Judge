@@ -78,5 +78,45 @@ services:
       - worker1
       - database
       - redis
+    restart: always
+  worker2:
+    build:
+      context: worker
+      dockerfile: Dockerfile.worker
+    container_name: worker2-container
+    volumes:
+      - ./worker:/app
+    env_file:
+      - ./worker/.env
+    environment:
+      - workerid=2
+    command: >
+      sh -c "python3 manage.py wait_for_db &&
+             python3 manage.py makemigrations &&
+             gunicorn worker.wsgi:application --bind 0.0.0.0:8002"
+    networks:
+      - judge
+    depends_on:
+      - database
+      - redis
+  celery2:
+    build:
+      context: worker
+      dockerfile: Dockerfile.celery
+    container_name: celery2-container
+    volumes:
+      - ./worker:/app
+    env_file:
+      - ./worker/.env
+    environment:
+      - workerid=2
+    command: "celery -A worker.celery worker -l INFO"
+    networks:
+      - judge
+    depends_on:
+      - worker2
+      - database
+      - redis
+    restart: always
 volumes:
   pgdata:

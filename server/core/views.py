@@ -1,11 +1,14 @@
 import os
+import json
 from time import time
 import subprocess
+from django.conf import settings
 from core import models, serializers
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 
+WORKERS = int(settings.WORKERS)
 
 class HealthCheck(APIView):
     def get(self, _):
@@ -38,15 +41,27 @@ class GetLanguages(APIView):
 
 class ExecuteCode(APIView):
     def post(self, request):
-        print(request.data)
-        i = 1
+        WORKER_ID = None
+        with open("/app/core/context.json", "r") as jsonFile:
+            data = json.load(jsonFile)
+            WORKER_ID = data["worker_id"]
         obj = models.Submission.objects.create(**request.data)
         process = subprocess.Popen(
-            f'timeout 1s curl -d "id={str(obj.task_id)}" http://worker{str(i)}:800{str(i)}/execute_code/',
+            f'timeout 1s curl -d "id={str(obj.task_id)}" http://worker{str(WORKER_ID)}:800{str(WORKER_ID)}/execute_code/',
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             shell=True,
         )
         _, _ = process.communicate()
-        data = {"id": obj.task_id}
-        return Response(data=data, status=status.HTTP_202_ACCEPTED)
+        ret_data = {"id": obj.task_id}
+        print(WORKER_ID)
+        WORKER_ID = WORKER_ID + 1
+        if WORKER_ID > WORKERS:
+            WORKER_ID = 1
+        
+        data["worker_id"] = WORKER_ID
+
+        with open("/app/core/context.json", "w") as jsonFile:
+            json.dump(data, jsonFile)
+        return Response(data=ret_data, status=status.HTTP_202_ACCEPTED)
+
