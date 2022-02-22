@@ -55,7 +55,6 @@ def executeCode(_, context):
     submission_object = Submission.objects.get(task_id=context["id"])
     submission_object.status = "Running"
     submission_object.save()
-    print("Executing Code")
     totaltc = submission_object.total_Test_Cases
     probId = submission_object.problem_id
     lang = submission_object.language.name
@@ -63,10 +62,9 @@ def executeCode(_, context):
     counter = 0
 
     create_directories(context["id"], lang, code)
-    ext = ".py"
     run_cmd = ["python3", f'temp/{context["id"]}/main.py']
+
     if lang == "CPP":
-        ext = ".cpp"
         flag, data = compile_code(context["id"])
         run_cmd = [f'temp/{context["id"]}/main.out']
         if not flag:
